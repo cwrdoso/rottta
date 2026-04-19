@@ -191,6 +191,7 @@ export function SettingsPanel({ initialOpen, onRestartTour }: Props = {}) {
               <Label className="text-xs text-muted-foreground">Diária Padrão (R$)</Label>
               <Input
                 ref={dailyRef}
+                data-tour="settings-daily"
                 type="number"
                 step="0.01"
                 inputMode="decimal"
@@ -204,6 +205,7 @@ export function SettingsPanel({ initialOpen, onRestartTour }: Props = {}) {
             <div>
               <Label className="text-xs text-muted-foreground">Preço da Gasolina (R$/litro)</Label>
               <Input
+                data-tour="settings-fuel"
                 type="number"
                 step="0.01"
                 inputMode="decimal"
