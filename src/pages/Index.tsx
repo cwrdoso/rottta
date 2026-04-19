@@ -299,7 +299,7 @@ const Index = () => {
               </Button>
             </div>
             <OperationalCosts routes={routes} extraExpenses={extraExpenses} />
-            <PlatformBreakdown routes={routes} />
+            
             <ExtraExpenseForm onSave={refresh} />
             <ExtraExpenseList expenses={extraExpenses} onDelete={refresh} />
           </>
