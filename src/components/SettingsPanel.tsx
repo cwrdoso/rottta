@@ -111,24 +111,44 @@ export function SettingsPanel({ initialOpen, onRestartTour }: Props = {}) {
   // Refs to read latest values inside the global event listener
   const dailyValRef = useRef(defaultDailyValue);
   const fuelValRef = useRef(defaultPricePerLiter);
+  const consumptionValRef = useRef(avgConsumption);
+  const reserveValRef = useRef(reservePerKm);
+  const helperValRef = useRef(helperCost);
+  const fixedFeeValRef = useRef(fixedFee);
   useEffect(() => { dailyValRef.current = defaultDailyValue; }, [defaultDailyValue]);
   useEffect(() => { fuelValRef.current = defaultPricePerLiter; }, [defaultPricePerLiter]);
+  useEffect(() => { consumptionValRef.current = avgConsumption; }, [avgConsumption]);
+  useEffect(() => { reserveValRef.current = reservePerKm; }, [reservePerKm]);
+  useEffect(() => { helperValRef.current = helperCost; }, [helperCost]);
+  useEffect(() => { fixedFeeValRef.current = fixedFee; }, [fixedFee]);
 
-  // Listen for the guided tour asking us to silently persist essentials
+  // Listen for the guided tour asking us to silently persist all editable fields
   useEffect(() => {
-    const handler = () => {
+    const saveHandler = () => {
       const cur = getSettings();
       saveSettings({
         ...cur,
+        avgConsumption: Number(consumptionValRef.current) || cur.avgConsumption || 10,
+        reservePerKm: Number(reserveValRef.current) || cur.reservePerKm || 0,
         defaultDailyValue: Number(dailyValRef.current) || cur.defaultDailyValue || 0,
         defaultPricePerLiter: Number(fuelValRef.current) || cur.defaultPricePerLiter || 0,
+        helperCost: Number(helperValRef.current) || 0,
+        fixedFee: fixedFeeValRef.current.trim() === "" ? 0 : Number(fixedFeeValRef.current),
       });
       const done =
         Number(dailyValRef.current) > 0 && Number(fuelValRef.current) > 0;
       setEssentialsDone((prev) => prev || done);
     };
-    window.addEventListener("tour:save-essentials", handler);
-    return () => window.removeEventListener("tour:save-essentials", handler);
+    const openHandler = (e: Event) => {
+      const detail = (e as CustomEvent<{ section?: SectionKey }>).detail;
+      if (detail?.section) setOpenSection(detail.section);
+    };
+    window.addEventListener("tour:save-essentials", saveHandler);
+    window.addEventListener("tour:open-section", openHandler as EventListener);
+    return () => {
+      window.removeEventListener("tour:save-essentials", saveHandler);
+      window.removeEventListener("tour:open-section", openHandler as EventListener);
+    };
   }, []);
 
   const toggleSection = (id: SectionKey) => {
