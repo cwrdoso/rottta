@@ -476,7 +476,7 @@ export function GuidedTour({ open, steps, onTabChange, onFinish, onSkip }: Props
               <>Entendi →</>
             )}
           </Button>
-          {step.requireInput && (
+          {(step.requireInput || step.skippable) && stepIndex !== steps.length - 1 && (
             <button
               type="button"
               onClick={handleNext}
