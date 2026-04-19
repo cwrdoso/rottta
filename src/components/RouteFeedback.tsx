@@ -103,16 +103,12 @@ export function RouteFeedback({ route, allRoutes, onClose }: Props) {
         </div>
 
         {/* Lucro destaque — counter animado 0 → profit em 800ms */}
-        <ProfitHighlight profit={profit} />
-          <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground mt-1">
-            <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{hours.toFixed(1)}h</span>
-            <span>·</span>
-            <span className="flex items-center gap-1"><TrendingUp className="h-3 w-3" />{fmt(perHour)}/h</span>
-          </div>
-          <span className={`inline-flex items-center gap-1 mt-2 text-[11px] font-medium px-2.5 py-1 rounded-full ${badge.classes}`}>
-            {badge.label}
-          </span>
-        </div>
+        <ProfitHighlight
+          profit={profit}
+          hours={hours}
+          perHour={perHour}
+          badge={badge}
+        />
 
 
         {/* Impacto nas metas */}
