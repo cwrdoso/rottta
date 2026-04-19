@@ -218,6 +218,31 @@ export function FinishRouteSheet({ open, onOpenChange, onFinished, onOpenSetting
               )}
             </div>
 
+            {/* Plataforma — opcional */}
+            <div>
+              <Label className="text-xs text-muted-foreground">
+                Plataforma <span className="text-muted-foreground/60">— opcional</span>
+              </Label>
+              <Select value={platform} onValueChange={setPlatform}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Sem plataforma" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PLATFORMS.map((p) => (
+                    <SelectItem key={p.id} value={p.id}>
+                      <span className="inline-flex items-center gap-2">
+                        <span
+                          className="h-2 w-2 rounded-full"
+                          style={{ backgroundColor: p.dot }}
+                          aria-hidden="true"
+                        />
+                        {p.label}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             {!hasDefaultPrice && (
               <div className="rounded-lg border border-warning/40 bg-warning/10 p-3 text-xs text-foreground">
                 Defina o <span className="font-semibold">Preço Padrão da Gasolina</span> em Configurações para calcular o custo automaticamente.
