@@ -149,12 +149,13 @@ export function GoalProgress({ routes }: Props) {
   const settings = getSettings();
   const [view, setView] = useState<View>("month");
 
-  if (!settings.monthlyGoal || settings.monthlyGoal <= 0) return null;
-
   const now = new Date();
-  const monthlyGoal = settings.monthlyGoal;
+  const hasGoal = !!(settings.monthlyGoal && settings.monthlyGoal > 0);
+  const monthlyGoal = settings.monthlyGoal && settings.monthlyGoal > 0 ? settings.monthlyGoal : 0;
   const fortnightGoal =
-    settings.fortnightGoal && settings.fortnightGoal > 0 ? settings.fortnightGoal : monthlyGoal / 2;
+    settings.fortnightGoal && settings.fortnightGoal > 0
+      ? settings.fortnightGoal
+      : monthlyGoal / 2;
 
   const monthProfit = getMonthRoutes(routes, now).reduce((s, r) => s + r.netProfit, 0);
   const fortProfit = getFortnightRoutes(routes, now).reduce((s, r) => s + r.netProfit, 0);
