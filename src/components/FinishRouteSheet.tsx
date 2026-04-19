@@ -4,6 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Check, Pencil, AlertCircle } from "lucide-react";
 import {
   calculateEntry,
@@ -14,6 +15,7 @@ import {
   type ActiveRoute,
   type RouteEntry,
 } from "@/lib/storage";
+import { PLATFORMS } from "@/lib/platforms";
 import { vibrate } from "@/lib/haptics";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -50,6 +52,7 @@ export function FinishRouteSheet({ open, onOpenChange, onFinished, onOpenSetting
   const [hasDefaultPrice, setHasDefaultPrice] = useState(true);
   const [saving, setSaving] = useState<"idle" | "saving" | "done">("idle");
   const [now, setNow] = useState(() => Date.now());
+  const [platform, setPlatform] = useState<string>("none");
 
   useEffect(() => {
     if (open) {
@@ -62,6 +65,7 @@ export function FinishRouteSheet({ open, onOpenChange, onFinished, onOpenSetting
       setHasDefaultPrice(defaultPrice > 0);
       setDailyValue(Number(settings.defaultDailyValue ?? 350));
       setAvgConsumption(settings.avgConsumption || 10);
+      setPlatform("none");
       setSaving("idle");
       setNow(Date.now());
     }
