@@ -20,6 +20,10 @@ export interface TourStep {
   /** If set, user must fill the input matching this data-tour selector to advance.
    *  A "Pular esta etapa" link is also shown. */
   requireInput?: string;
+  /** If set, dispatches tour:open-section to expand the named settings section */
+  openSection?: "essencial" | "veiculo" | "financeiro" | "metas";
+  /** If set, shows a "Pular esta etapa" link even without requireInput */
+  skippable?: boolean;
 }
 
 interface Rect {
