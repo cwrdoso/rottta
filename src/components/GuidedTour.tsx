@@ -17,6 +17,9 @@ export interface TourStep {
   placement?: "top" | "bottom";
   /** Extra padding around the spotlight rect, px */
   padding?: number;
+  /** If set, user must fill the input matching this data-tour selector to advance.
+   *  A "Pular esta etapa" link is also shown. */
+  requireInput?: string;
 }
 
 interface Rect {
