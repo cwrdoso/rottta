@@ -15,7 +15,7 @@ import {
   type ActiveRoute,
   type RouteEntry,
 } from "@/lib/storage";
-import { PLATFORMS } from "@/lib/platforms";
+
 import { vibrate } from "@/lib/haptics";
 import { toast } from "sonner";
 import { format } from "date-fns";
