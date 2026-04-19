@@ -226,6 +226,8 @@ const Index = () => {
             {hasAnyRoute ? (
               <>
                 <SummaryCards routes={routes} />
+                <DailyBarChart routes={routes} />
+                <WeekComparison routes={routes} />
                 <GoalProgress routes={routes} />
                 <QuinzenaSummary routes={routes} />
               </>
@@ -285,7 +287,24 @@ const Index = () => {
         )}
         {tab === "costs" && (
           <>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold flex items-center gap-2">
+                <DollarSign className="h-5 w-5 text-primary" />
+                Extrato
+              </h2>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setExportSheetOpen(true)}
+                className="gap-1.5 h-9"
+                aria-label="Exportar"
+              >
+                <Share2 className="h-4 w-4" />
+                Exportar
+              </Button>
+            </div>
             <OperationalCosts routes={routes} extraExpenses={extraExpenses} />
+            <PlatformBreakdown routes={routes} />
             <ExtraExpenseForm onSave={refresh} />
             <ExtraExpenseList expenses={extraExpenses} onDelete={refresh} />
           </>
