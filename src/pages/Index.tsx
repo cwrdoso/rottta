@@ -23,6 +23,7 @@ import { ActiveRouteBanner } from "@/components/ActiveRouteBanner";
 import { StartRouteSheet } from "@/components/StartRouteSheet";
 import { FinishRouteSheet } from "@/components/FinishRouteSheet";
 import { GuidedTour, type TourStep } from "@/components/GuidedTour";
+import { EmptyDashboard } from "@/components/EmptyDashboard";
 import { Home, Route, DollarSign, Settings, LogOut, Play, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -164,14 +165,24 @@ const Index = () => {
   const direction = currentIndex >= prevTabIndex ? "right" : "left";
   const tabAnimation = direction === "right" ? "animate-slide-in-right" : "animate-slide-in-left";
 
-  const tabs: { key: Tab; icon: typeof Home }[] = [
-    { key: "home", icon: Home },
-    { key: "routes", icon: Route },
-    { key: "costs", icon: DollarSign },
-    { key: "settings", icon: Settings },
+  const tabs: { key: Tab; icon: typeof Home; label: string }[] = [
+    { key: "home", icon: Home, label: "Início" },
+    { key: "routes", icon: Route, label: "Rotas" },
+    { key: "costs", icon: DollarSign, label: "Extrato" },
+    { key: "settings", icon: Settings, label: "Config" },
   ];
 
   const hasActiveRoute = !!localStorage.getItem("driver_active_route");
+  const hasAnyRoute = routes.some((r) => (r.type ?? "route") === "route");
+
+  const goToStartRoute = () => {
+    handleTabChange("routes");
+    // open the start sheet only when not in a manual flow + no active route
+    setTimeout(() => {
+      const active = !!localStorage.getItem("driver_active_route");
+      if (!active && routeMode === "dynamic") setStartSheetOpen(true);
+    }, 250);
+  };
 
   return (
     <div className="min-h-screen pb-20">
@@ -205,9 +216,15 @@ const Index = () => {
       <main key={tab} className={`max-w-lg mx-auto px-4 mt-6 space-y-6 md:space-y-8 ${tabAnimation}`}>
         {tab === "home" && (
           <>
-            <SummaryCards routes={routes} />
-            <GoalProgress routes={routes} />
-            <QuinzenaSummary routes={routes} />
+            {hasAnyRoute ? (
+              <>
+                <SummaryCards routes={routes} />
+                <GoalProgress routes={routes} />
+                <QuinzenaSummary routes={routes} />
+              </>
+            ) : (
+              <EmptyDashboard onStart={goToStartRoute} />
+            )}
           </>
         )}
         {tab === "routes" && (
@@ -280,22 +297,34 @@ const Index = () => {
         onFinished={(entry) => handleRouteSaved(entry)}
       />
 
-      <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20">
-        <div className="flex items-center gap-2 bg-card/90 backdrop-blur-xl border border-border/30 rounded-full px-3 py-2 shadow-2xl shadow-primary/10">
-          {tabs.map((t) => (
-            <button
-              key={t.key}
-              data-tour={`tab-${t.key}`}
-              onClick={() => handleTabChange(t.key)}
-              className={`relative flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 ${
-                tab === t.key
-                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/40 scale-105"
-                  : "text-muted-foreground hover:text-foreground"
-              } ${bouncingTab === t.key ? "animate-bounce-tap" : ""}`}
-            >
-              <t.icon className="h-5 w-5" strokeWidth={tab === t.key ? 2.5 : 1.5} />
-            </button>
-          ))}
+      <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-20">
+        <div className="flex items-end gap-1 bg-card/90 backdrop-blur-xl border border-border/30 rounded-3xl px-2 py-2 shadow-2xl shadow-primary/10">
+          {tabs.map((t) => {
+            const active = tab === t.key;
+            return (
+              <button
+                key={t.key}
+                data-tour={`tab-${t.key}`}
+                onClick={() => handleTabChange(t.key)}
+                aria-label={t.label}
+                aria-current={active ? "page" : undefined}
+                className={`relative flex flex-col items-center justify-center min-w-[60px] px-2 py-1.5 rounded-2xl transition-all duration-300 ${
+                  active
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/40"
+                    : "text-muted-foreground hover:text-foreground"
+                } ${bouncingTab === t.key ? "animate-bounce-tap" : ""}`}
+              >
+                <t.icon className="h-5 w-5" strokeWidth={active ? 2.5 : 1.75} />
+                <span
+                  className={`text-[10px] mt-0.5 leading-none whitespace-nowrap ${
+                    active ? "font-semibold" : "font-medium"
+                  }`}
+                >
+                  {t.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </nav>
 
